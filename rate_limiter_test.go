@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestWaitUnderLimit(t *testing.T) {
+func TestRateLimiter_Wait_noblock(t *testing.T) {
 	start := time.Now()
 	limit := 5
 	interval := time.Second * 3
@@ -18,7 +18,7 @@ func TestWaitUnderLimit(t *testing.T) {
 	}
 }
 
-func TestWaitOverLimit(t *testing.T) {
+func TestRateLimiter_Wait_block(t *testing.T) {
 	start := time.Now()
 	limit := 5
 	interval := time.Second * 3
@@ -28,5 +28,19 @@ func TestWaitOverLimit(t *testing.T) {
 	}
 	if time.Now().Sub(start) < interval {
 		t.Error("The limiter didn't block when it should have")
+	}
+}
+
+func TestRateLimiter_Try(t *testing.T) {
+	limit := 5
+	interval := time.Second * 3
+	limiter := New(limit, interval)
+	for i := 0; i < limit; i++ {
+		if ok, _ := limiter.Try(); !ok {
+			t.Fatalf("Should have allowed try on attempt %d", i)
+		}
+	}
+	if ok, _ := limiter.Try(); ok {
+		t.Fatal("Should have not allowed try on final attempt")
 	}
 }
