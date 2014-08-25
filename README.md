@@ -127,11 +127,17 @@ func main() {
 	for i := 1; i <= 5; i++ {
 		say(fmt.Sprintf("Message %d", i))
 	}
+	time.Sleep(time.Second / 2)
+	say("I waited half a second, is that enough?")
+	time.Sleep(time.Second / 2)
+	say("Okay, I waited a second.")
 	// Output:
 	// You said: Message 1
 	// You said: Message 2
 	// You said: Message 3
 	// Spam filter triggered, please wait 999.980816ms
 	// Spam filter triggered, please wait 999.976704ms
+	// Spam filter triggered, please wait 499.844795ms
+	// You said: Okay, I waited a second.
 }
 ```
