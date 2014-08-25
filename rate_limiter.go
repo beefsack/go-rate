@@ -26,7 +26,7 @@ func New(limit int, interval time.Duration) *RateLimiter {
 // Wait will block if the rate limit has been reached.
 func (r *RateLimiter) Wait() {
 	r.lock.Lock()
-	for len(r.times) == r.limit {
+	if len(r.times) == r.limit {
 		diff := time.Now().Sub(r.times[0])
 		if diff < r.interval {
 			time.Sleep(r.interval - diff)
