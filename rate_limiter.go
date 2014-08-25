@@ -27,9 +27,11 @@ func New(limit int, interval time.Duration) *RateLimiter {
 func (r *RateLimiter) Wait() {
 	r.lock.Lock()
 	for len(r.times) == r.limit {
-		if time.Now().Sub(r.times[0]) > r.interval {
-			r.times = r.times[1:]
+		diff := time.Now().Sub(r.times[0])
+		if diff < r.interval {
+			time.Sleep(r.interval - diff)
 		}
+		r.times = r.times[1:]
 	}
 	r.times = append(r.times, time.Now())
 	r.lock.Unlock()
