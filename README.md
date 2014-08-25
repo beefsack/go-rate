@@ -18,7 +18,7 @@ Import `github.com/beefsack/go-rate-limiter` and create a new rate limiter with
 the `rate_limiter.New(limit int, interval time.Duration)` function.
 
 The rate limiter provides a `Wait()` and a `Try() (bool, time.Duration)` method
-for both blocking and non-blocking mutex functionality respectively.
+for both blocking and non-blocking functionality respectively.
 
 API documentation available at [godoc.org](http://godoc.org/github.com/beefsack/go-rate-limiter).
 
