@@ -11,12 +11,23 @@ It is used in production at
 [LangTrend](http://langtrend.com/l/Java,PHP,JavaScript) to adhere to the GitHub
 API rate limits.
 
+Usage
+-----
+
+Import `github.com/beefsack/go-rate-limiter` and create a new rate limiter with
+the `rate_limiter.New(limit int, interval time.Duration)` function.
+
+The rate limiter provides a `Wait()` and a `Try() (bool, time.Duration)` method
+for both blocking and non-blocking mutex functionality respectively.
+
+API documentation available at [godoc.org](http://godoc.org/github.com/beefsack/go-rate-limiter).
+
 Examples
 --------
 
-### Simple rate limiting with blocking
+### Blocking rate limiting
 
-This example demonstrates limiting the rate to 3 times per second.
+This example demonstrates limiting the output rate to 3 times per second.
 
 ```Go
 package main
@@ -49,7 +60,7 @@ func main() {
 }
 ```
 
-### Multi rate simiting with blocking
+### Blocking rate limiting with multiple limiters
 
 This example demonstrates combining rate limiters, one limiting at once per
 second, the other limiting at 2 times per 3 seconds.
