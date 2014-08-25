@@ -1,4 +1,4 @@
-package rate_limiter
+package rate
 
 import (
 	"sync"

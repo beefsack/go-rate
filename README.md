@@ -1,9 +1,9 @@
-go-rate-limiter
+go-rate
 ===============
 
-[![Build Status](https://travis-ci.org/beefsack/go-rate-limiter.svg?branch=master)](https://travis-ci.org/beefsack/go-rate-limiter)
+[![Build Status](https://travis-ci.org/beefsack/go-rate.svg?branch=master)](https://travis-ci.org/beefsack/go-rate)
 
-**go-rate-limiter** is a rate limiter designed for a range of use cases,
+**go-rate** is a rate limiter designed for a range of use cases,
 including server side spam protection and preventing saturation of APIs you
 consume.
 
@@ -14,13 +14,13 @@ API rate limits.
 Usage
 -----
 
-Import `github.com/beefsack/go-rate-limiter` and create a new rate limiter with
-the `rate_limiter.New(limit int, interval time.Duration)` function.
+Import `github.com/beefsack/go-rate` and create a new rate limiter with
+the `rate.New(limit int, interval time.Duration)` function.
 
 The rate limiter provides a `Wait()` and a `Try() (bool, time.Duration)` method
 for both blocking and non-blocking functionality respectively.
 
-API documentation available at [godoc.org](http://godoc.org/github.com/beefsack/go-rate-limiter).
+API documentation available at [godoc.org](http://godoc.org/github.com/beefsack/go-rate).
 
 Examples
 --------
@@ -36,11 +36,11 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/beefsack/go-rate-limiter"
+	"github.com/beefsack/go-rate"
 )
 
 func main() {
-	rl := rate_limiter.New(3, time.Second) // 3 times per second
+	rl := rate.New(3, time.Second) // 3 times per second
 	begin := time.Now()
 	for i := 1; i <= 10; i++ {
 		rl.Wait()
@@ -72,13 +72,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/beefsack/go-rate-limiter"
+	"github.com/beefsack/go-rate"
 )
 
 func main() {
 	begin := time.Now()
-	rl1 := rate_limiter.New(1, time.Second)   // Once per second
-	rl2 := rate_limiter.New(2, time.Second*3) // 2 times per 3 seconds
+	rl1 := rate.New(1, time.Second)   // Once per second
+	rl2 := rate.New(2, time.Second*3) // 2 times per 3 seconds
 	for i := 1; i <= 10; i++ {
 		rl1.Wait()
 		rl2.Wait()
@@ -110,10 +110,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/beefsack/go-rate-limiter"
+	"github.com/beefsack/go-rate"
 )
 
-var rl = rate_limiter.New(3, time.Second) // 3 times per second
+var rl = rate.New(3, time.Second) // 3 times per second
 
 func say(message string) {
 	if ok, remaining := rl.Try(); ok {
