@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// A RateLimiter limits the rate at which an action can be performed.
-type RateLimiter struct {
+// A rateLimiter limits the rate at which an action can be performed.
+type rateLimiter struct {
 	limit               int
 	interval            time.Duration
 	waitMutex, tryMutex *sync.Mutex
@@ -15,8 +15,8 @@ type RateLimiter struct {
 }
 
 // New creates a new rate limiter for the limit and interval.
-func New(limit int, interval time.Duration) *RateLimiter {
-	return &RateLimiter{
+func New(limit int, interval time.Duration) *rateLimiter {
+	return &rateLimiter{
 		limit:     limit,
 		interval:  interval,
 		waitMutex: &sync.Mutex{},
@@ -26,7 +26,7 @@ func New(limit int, interval time.Duration) *RateLimiter {
 }
 
 // Wait will block if the rate limit has been reached.
-func (r *RateLimiter) Wait() {
+func (r *rateLimiter) Wait() {
 	r.waitMutex.Lock()
 	defer r.waitMutex.Unlock()
 	for {
@@ -40,7 +40,7 @@ func (r *RateLimiter) Wait() {
 
 // Try will return true if under the rate limit, or false if over and the
 // remaining time before the rate limit expires.
-func (r *RateLimiter) Try() (ok bool, remaining time.Duration) {
+func (r *rateLimiter) Try() (ok bool, remaining time.Duration) {
 	r.tryMutex.Lock()
 	defer r.tryMutex.Unlock()
 	if len(r.times) == r.limit {
