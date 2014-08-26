@@ -146,3 +146,4 @@ Authors
 -------
 
 * [Michael Alexander](https://github.com/beefsack)
+* [Geert-Johan Riemer](https://github.com/GeertJohan)
