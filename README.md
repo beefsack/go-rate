@@ -141,3 +141,8 @@ func main() {
 	// You said: Okay, I waited a second.
 }
 ```
+
+Authors
+-------
+
+* [Michael Alexander](https://github.com/beefsack)
