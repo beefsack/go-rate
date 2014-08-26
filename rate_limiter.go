@@ -7,28 +7,21 @@ import (
 
 // A RateLimiter limits the rate at which an action can be performed.
 type RateLimiter struct {
-	limit               int
-	interval            time.Duration
-	waitMutex, tryMutex *sync.Mutex
-	wLock               *sync.Mutex
-	times               []time.Time
+	interval time.Duration
+	mtx      sync.Mutex
+	times    []time.Time
 }
 
 // New creates a new rate limiter for the limit and interval.
 func New(limit int, interval time.Duration) *RateLimiter {
 	return &RateLimiter{
-		limit:     limit,
-		interval:  interval,
-		waitMutex: &sync.Mutex{},
-		tryMutex:  &sync.Mutex{},
-		times:     make([]time.Time, limit),
+		interval: interval,
+		times:    make([]time.Time, 0, limit),
 	}
 }
 
 // Wait will block if the rate limit has been reached.
 func (r *RateLimiter) Wait() {
-	r.waitMutex.Lock()
-	defer r.waitMutex.Unlock()
 	for {
 		ok, remaining := r.Try()
 		if ok {
@@ -41,15 +34,16 @@ func (r *RateLimiter) Wait() {
 // Try will return true if under the rate limit, or false if over and the
 // remaining time before the rate limit expires.
 func (r *RateLimiter) Try() (ok bool, remaining time.Duration) {
-	r.tryMutex.Lock()
-	defer r.tryMutex.Unlock()
-	if len(r.times) == r.limit {
-		diff := time.Now().Sub(r.times[0])
-		if diff < r.interval {
+	r.mtx.Lock()
+	defer r.mtx.Unlock()
+	now := time.Now()
+	if l := len(r.times); l == cap(r.times) {
+		if diff := now.Sub(r.times[0]); diff < r.interval {
 			return false, r.interval - diff
 		}
-		r.times = r.times[1:]
+		copy(r.times, r.times[1:])
+		r.times = r.times[:l-1]
 	}
-	r.times = append(r.times, time.Now())
+	r.times = append(r.times, now)
 	return true, 0
 }
