@@ -2,6 +2,7 @@ go-rate
 ===============
 
 [![Build Status](https://travis-ci.org/beefsack/go-rate.svg?branch=master)](https://travis-ci.org/beefsack/go-rate)
+[![GoDoc](https://godoc.org/github.com/beefsack/go-rate?status.svg)](https://godoc.org/github.com/beefsack/go-rate)
 
 **go-rate** is a rate limiter designed for a range of use cases,
 including server side spam protection and preventing saturation of APIs you
