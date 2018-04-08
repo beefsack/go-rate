@@ -57,7 +57,7 @@ func (r *RateLimiter) Wait() {
 // remaining time before the rate limit expires.
 func (r *RateLimiter) Try() (ok bool, remaining time.Duration) {
 	for {
-		//extract previous state
+		// extract previous state
 		previousStatePointer := atomic.LoadPointer(&r.state)
 		previousState := (*state)(previousStatePointer)
 		// compute new state
@@ -76,15 +76,19 @@ func (r *RateLimiter) Try() (ok bool, remaining time.Duration) {
 		// try to acquire permission by atomic update
 		if newState.permissions > 0 {
 			newState.permissions -= 1
-			if atomic.CompareAndSwapPointer((*unsafe.Pointer)(&r.state), previousStatePointer, unsafe.Pointer(&newState)) {
+			if atomic.CompareAndSwapPointer(
+				(*unsafe.Pointer)(&r.state),
+				previousStatePointer,
+				unsafe.Pointer(&newState),
+			) {
 				return true, 0
 			}
 			continue
 		}
-		// if there is not enough permissions calculate wait duration
-		nextCycleStart := (currentCycle + 1) * int64(r.interval)
+		// if there is not enough permissions, calculate wait duration
+		nextCycleStart := (currentCycle + 1) * r.interval
 		nsToNextCycle := nextCycleStart - now
-		fullCyclesRequired := (-newState.permissions) / r.interval
+		fullCyclesRequired := -newState.permissions / r.interval
 		remaining := (fullCyclesRequired * r.interval) + nsToNextCycle
 		return false, time.Duration(remaining)
 	}
