@@ -47,46 +47,6 @@ func BenchmarkAtomicRateLimiter(b *testing.B) {
 	}
 }
 
-func BenchmarkMutexRateLimiter(b *testing.B) {
-	for ng := 1; ng <= 2048; ng *= 2 {
-		b.Run(fmt.Sprint(ng), func(b *testing.B) {
-			limiter := NewMutexRateLimiter(b.N, 10)
-
-			var wg sync.WaitGroup
-			wg.Add(ng)
-
-			n := b.N
-			quota := n / ng
-
-			for g := ng; g > 0; g-- {
-				if g == 1 {
-					quota = n
-				}
-
-				go func(quota int) {
-					for i := 0; i < quota; i++ {
-						ok, _ := limiter.Try()
-						if !ok {
-							b.Fatal("No enough permissions")
-						}
-					}
-					wg.Done()
-				}(quota)
-
-				n -= quota
-			}
-
-			if n != 0 {
-				b.Fatalf("Incorrect quota assignments: %v remaining", n)
-			}
-
-			b.StartTimer()
-			wg.Wait()
-			b.StopTimer()
-		})
-	}
-}
-
 func TestRateLimiter_Wait_noblock(t *testing.T) {
 	start := time.Now()
 	limit := 5
